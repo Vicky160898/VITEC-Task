@@ -19,6 +19,7 @@
   "homepage": "https://github.com/Vicky160898/VITEC-Task#readme",
   "dependencies": {
     "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.0",
     "mongoose": "^7.0.3"
   },
   "devDependencies": {

@@ -4,6 +4,6 @@ const { LoanRegister, PayableAmount } = require("../controller/loanController");
 const router = express.Router();
 
 router.post("/loan/apply", isAuth, LoanRegister);
-router.get("/loan", isAuth, PayableAmount);
+router.get("/loan/:id", isAuth, PayableAmount);
 
 module.exports = router;

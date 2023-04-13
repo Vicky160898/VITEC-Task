@@ -25,7 +25,7 @@ const LoanRegister = async (req, res) => {
 //here we calculate the payable amount for a given loan after the loan expiry date:
 
 const PayableAmount = async (req, res) => {
-  const loan = await Loan.findById(req.id).populate("user");
+  const loan = await Loan.findById(req.params.id).populate("user");
 
   try {
     if (!loan) {
@@ -38,9 +38,9 @@ const PayableAmount = async (req, res) => {
       return res.status(400).send("Loan is not yet due");
     }
     const totalInterest = loan.amount * (loan.interestRate / 365) * delayDay;
-    const dailyInterest = loan.amount * (loan.dailyInterest / 100);
+    const dailyInterest = loan.amount * loan.dailyInterest;
     const totalPenalty =
-      Math.floor(delayDay / 15) * loan.amount * (loan.extraPenalty / 100);
+      Math.floor(delayDay / 15) * loan.amount * loan.extraPenalty;
 
     const TotalAmount =
       loan.amount +
@@ -48,14 +48,21 @@ const PayableAmount = async (req, res) => {
       dailyInterest +
       totalPenalty -
       loan.paidAmount;
+
+    // Update the loan paid amount
+    // await Loan.findByIdAndUpdate(
+    //   req.params.id,
+    //   { paidAmount: TotalAmount },
+    //   { new: true }
+    // );
+
     return res.status(200).send({
       user: loan.user,
       loanAmount: loan.amount,
       totalInterest,
       dailyInterest,
       totalPenalty,
-      paidAmount: loan.paidAmount,
-      TotalAmount,
+      paidAmount: TotalAmount,
     });
   } catch (error) {
     return res.status(401).send("Something wents wrong");
